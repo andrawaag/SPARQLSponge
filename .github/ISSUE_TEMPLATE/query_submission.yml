@@ -10,17 +10,32 @@ body:
       placeholder: "Short title"
 
   - type: textarea
-    id: description
+    id: natural_language_query
     attributes:
-      label: Description
+      label: Query in natural language
       description: Describe in natural language what your query does. What are you trying to achieve with it?
       placeholder: "Describe your query here"
 
-  - type: textarea
-    id: sparql_endpoints
+  - type: checkboxes
+    id: predefined_sparql_endpoints
     attributes:
-      label: SPARQL Endpoint(s)
-      description: Add one or more SPARQL endpoints where this query works. Enter each endpoint on a new line.
+      label: Select SPARQL Endpoints
+      description: Choose one or more SPARQL endpoints from the list, or select 'Other' to provide your own.
+      options:
+        - label: "Wikidata SPARQL (https://query.wikidata.org/sparql)"
+          value: "wikidata"
+        - label: "DBpedia SPARQL (https://dbpedia.org/sparql)"
+          value: "dbpedia"
+        - label: "UniProt SPARQL (https://sparql.uniprot.org/sparql)"
+          value: "uniprot"
+        - label: "Other (please specify below)"
+          value: "other"
+
+  - type: input
+    id: custom_sparql_endpoint
+    attributes:
+      label: Custom SPARQL Endpoint
+      description: If you selected 'Other' above, please provide the SPARQL endpoint here.
       placeholder: "https://example.org/sparql"
 
   - type: input
