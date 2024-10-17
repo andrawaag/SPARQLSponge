@@ -2,13 +2,6 @@ name: SPARQL Query Submission
 description: Form to submit SPARQL queries
 title: "[Query] Short description of the query"
 body:
-  - type: input
-    id: short_title
-    attributes:
-      label: Short title
-      description: Provide a short title for your query.
-      placeholder: "Short title"
-
   - type: textarea
     id: natural_language_query
     attributes:
