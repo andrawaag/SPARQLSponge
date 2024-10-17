@@ -9,6 +9,13 @@ body:
       description: Describe in natural language what your query does. What are you trying to achieve with it?
       placeholder: "Describe your query here"
 
+  - type: textarea
+    id: sparql_query
+    attributes:
+      label:SPARQL query
+      description: Provide a working SPARQL query example that reflects what is described in English above
+      placeholder: "Add a working SPARQL query"
+
   - type: checkboxes
     id: predefined_sparql_endpoints
     attributes:
