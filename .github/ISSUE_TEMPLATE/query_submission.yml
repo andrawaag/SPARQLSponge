@@ -25,6 +25,7 @@ body:
         - label: "Wikidata SPARQL (https://query.wikidata.org/sparql)"
         - label: "DBpedia SPARQL (https://dbpedia.org/sparql)"
         - label: "UniProt SPARQL (https://sparql.uniprot.org/sparql)"
+        - label: "Wikipathways SPARQL (https://sparql.wikipathways.org)"
         - label: "Other (please specify below)"
 
   - type: input
