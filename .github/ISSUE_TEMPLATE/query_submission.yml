@@ -23,13 +23,9 @@ body:
       description: Choose one or more SPARQL endpoints from the list, or select 'Other' to provide your own.
       options:
         - label: "Wikidata SPARQL (https://query.wikidata.org/sparql)"
-          value: "wikidata"
         - label: "DBpedia SPARQL (https://dbpedia.org/sparql)"
-          value: "dbpedia"
         - label: "UniProt SPARQL (https://sparql.uniprot.org/sparql)"
-          value: "uniprot"
         - label: "Other (please specify below)"
-          value: "other"
 
   - type: input
     id: custom_sparql_endpoint
