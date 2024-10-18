@@ -9,8 +9,10 @@ issue_body = os.getenv('GITHUB_ISSUE_BODY', '')
 sparql_query_match = re.search(r'### SPARQL query\n\s*(.*)\n###', issue_body, re.DOTALL)
 if sparql_query_match:
     sparql_query = sparql_query_match.group(1).strip()
+    print(sparql_query)
 else:
     sparql_query = ''
+    print("boe")
 
 # If no SPARQL query was found, exit with failure
 if not sparql_query:
