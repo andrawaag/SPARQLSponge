@@ -28,10 +28,4 @@ body:
       description: If you selected 'Other' above, please provide the SPARQL endpoint here.
       placeholder: "https://example.org/sparql"
 
-  - type: input
-    id: query_results_link
-    attributes:
-      label: Optional link to query results
-      description: Add a link to the query results (optional).
-      placeholder: "URL to the query results"
 
