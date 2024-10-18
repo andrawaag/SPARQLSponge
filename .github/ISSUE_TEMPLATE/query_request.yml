@@ -1,1 +1,37 @@
+name: SPARQL Query request
+description: Form to submit SPARQL query requests
+title: "[Query] Short description of the query"
+body:
+  - type: textarea
+    id: natural_language_query
+    attributes:
+      label: Query in natural language
+      description: Describe in natural language what your query does. What are you trying to achieve with it?
+      placeholder: "Describe your query here"
+
+  - type: checkboxes
+    id: predefined_sparql_endpoints
+    attributes:
+      label: Select SPARQL Endpoints
+      description: Choose one or more SPARQL endpoints from the list, or select 'Other' to provide your own.
+      options:
+        - label: "Wikidata SPARQL (https://query.wikidata.org/sparql)"
+        - label: "DBpedia SPARQL (https://dbpedia.org/sparql)"
+        - label: "UniProt SPARQL (https://sparql.uniprot.org/sparql)"
+        - label: "Wikipathways SPARQL (https://sparql.wikipathways.org)"
+        - label: "Other (please specify below)"
+
+  - type: input
+    id: custom_sparql_endpoint
+    attributes:
+      label: Custom SPARQL Endpoint
+      description: If you selected 'Other' above, please provide the SPARQL endpoint here.
+      placeholder: "https://example.org/sparql"
+
+  - type: input
+    id: query_results_link
+    attributes:
+      label: Optional link to query results
+      description: Add a link to the query results (optional).
+      placeholder: "URL to the query results"
 
