@@ -6,7 +6,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 issue_body = os.getenv('GITHUB_ISSUE_BODY', '')
 
 # Extract the SPARQL query from the issue body
-sparql_query_match = re.search(r'### SPARQL query\n\s*(.*)###', issue_body, re.DOTALL)
+sparql_query_match = re.search(r'### SPARQL query\n\s*(.*?)\s*###', issue_body, re.DOTALL)
 if sparql_query_match:
     sparql_query = sparql_query_match.group(1).strip()
     print(sparql_query)
