@@ -1,0 +1,39 @@
+name: SPARQL Query Validation
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  validate_sparql_query:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install SPARQLWrapper rdflib
+
+    - name: Validate SPARQL query
+      id: validate
+      run: |
+        python scripts/validate_sparql.py
+      env:
+        GITHUB_ISSUE_BODY: ${{ github.event.issue.body }}
+
+    - name: Post comment on invalid query and close the issue
+      if: failure()
+      run: |
+        ISSUE_NUMBER=${{ github.event.issue.number }}
+        COMMENT_BODY="The SPARQL query you submitted is invalid. Please check the syntax and try again."
+        gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER}/comments -f body="$COMMENT_BODY"
+        gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER} -X PATCH -f state="closed"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
