@@ -45,11 +45,11 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # Step 3: Convert the issue form to RDF using MD5 hash of SPARQL query
-    - name: Convert JSON to RDF with MD5 hash
+    # Step 3: Directly convert issue form to RDF with MD5 hash of SPARQL query
+    - name: Convert issue form to RDF with MD5 hash
       if: success()  # Only run this step if the SPARQL validation was successful
       run: |
-        python scripts/convert_to_rdf.py
+        python scripts/convert_form_to_rdf.py
       env:
         GITHUB_ISSUE_BODY: ${{ github.event.issue.body }}
 
