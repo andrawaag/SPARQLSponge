@@ -15,10 +15,10 @@ jobs:
 
     steps:
     - name: Check out repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4  # Updated to use v4 which supports Node.js 20
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5  # Updated to use v5 which supports Node.js 20
       with:
         python-version: '3.x'
 
