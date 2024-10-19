@@ -1,4 +1,4 @@
-name: SPARQL Query Validation
+name: SPARQL Query Validation and RDF Conversion
 
 # Grant permissions to write to issues
 permissions:
@@ -10,7 +10,7 @@ on:
     types: [opened]
 
 jobs:
-  validate_sparql_query:
+  validate_and_convert_to_rdf:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,6 +26,7 @@ jobs:
       run: |
         pip install SPARQLWrapper rdflib
 
+    # Step 1: Validate SPARQL query
     - name: Validate SPARQL query
       id: validate
       run: |
@@ -33,6 +34,7 @@ jobs:
       env:
         GITHUB_ISSUE_BODY: ${{ github.event.issue.body }}
 
+    # Step 2: Post comment and close issue if SPARQL is invalid
     - name: Post comment on invalid query and close the issue
       if: failure()
       run: |
@@ -42,3 +44,19 @@ jobs:
         gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER} -X PATCH -f state="closed"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # Step 3: Convert the issue form to RDF using MD5 hash of SPARQL query
+    - name: Convert JSON to RDF with MD5 hash
+      if: success()  # Only run this step if the SPARQL validation was successful
+      run: |
+        python scripts/convert_to_rdf.py
+      env:
+        GITHUB_ISSUE_BODY: ${{ github.event.issue.body }}
+
+    # Step 4: Upload the RDF as an artifact
+    - name: Upload RDF as an artifact
+      if: success()  # Only upload if the conversion was successful
+      uses: actions/upload-artifact@v3
+      with:
+        name: issue-rdf-artifact
+        path: issue_output.ttl
