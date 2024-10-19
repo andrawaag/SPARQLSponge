@@ -53,7 +53,7 @@ for field, value in data.items():
 
 # Serialize the RDF graph to Turtle format (or other formats like XML, JSON-LD, etc.)
 rdf_output_file = 'issue_output.ttl'
-with open(rdf_output_file, 'wb') as rdf_file:
+with open(rdf_output_file, 'w') as rdf_file:
     rdf_file.write(g.serialize(format='turtle'))
 
 print(f"RDF data saved to {rdf_output_file}")
