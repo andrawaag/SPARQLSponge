@@ -1,0 +1,41 @@
+name: Convert Issue Form to JSON
+
+# Grant permissions to write to issues
+permissions:
+  issues: write
+
+on:
+  workflow_run:
+    workflows: ["SPARQL Query Validation"]
+    types:
+      - completed
+
+jobs:
+  convert_to_json:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Extract issue body and convert to JSON
+      run: |
+        echo "${{ github.event.workflow_run.conclusion }}"  # To check the previous workflow conclusion
+        echo "${{ github.event.issue.body }}" > issue_body.txt
+        python scripts/convert_to_json.py
+      env:
+        GITHUB_ISSUE_BODY: ${{ github.event.issue.body }}
+
+    - name: Post JSON as a comment
+      run: |
+        ISSUE_NUMBER=${{ github.event.issue.number }}
+        JSON_OUTPUT=$(cat json_output.json)
+        COMMENT_BODY="Here is the converted JSON from the issue form:\n\`\`\`json\n$JSON_OUTPUT\n\`\`\`"
+        gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER}/comments -f body="$COMMENT_BODY"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
