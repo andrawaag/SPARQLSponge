@@ -12,14 +12,14 @@ if sparql_query_match:
     print(sparql_query)
 else:
     sparql_query = ''
-    print("boe")
+    print("No SPARQL query found.")
 
 # If no SPARQL query was found, exit with failure
 if not sparql_query:
     print("No SPARQL query found in the issue.")
     exit(1)
 
-# Define the SPARQL endpoint (you can extract this from the issue body as well)
+# Define the SPARQL endpoint
 sparql_endpoint = "https://query.wikidata.org/sparql"  # Example endpoint
 
 # Function to validate SPARQL query
