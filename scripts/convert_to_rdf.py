@@ -1,5 +1,4 @@
 import os
-import json
 import hashlib
 from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import XSD
@@ -8,17 +7,28 @@ from rdflib.namespace import XSD
 def generate_md5_hash(input_string):
     return hashlib.md5(input_string.encode()).hexdigest()
 
-# Retrieve the issue body from the environment variable (assuming it's been converted to JSON first)
-issue_body_json = 'json_output.json'
+# Retrieve the issue body from the environment variable
+issue_body = os.getenv('GITHUB_ISSUE_BODY', '')
 
-# Load the JSON data
-with open(issue_body_json, 'r') as json_file:
-    issue_data = json.load(json_file)
+# Parse the issue form fields directly from the issue body
+lines = issue_body.splitlines()
+
+data = {}
+current_field = None
+
+for line in lines:
+    # Identify new field titles (assuming '### Field Name')
+    if line.startswith('### '):
+        current_field = line.strip('### ').strip()
+        data[current_field] = ''
+    elif current_field:
+        # Append values to the current field
+        data[current_field] += line.strip()
 
 # Extract the SPARQL query to generate the MD5 hash (assuming the key for the query is "SPARQL query")
-sparql_query = issue_data.get("SPARQL query", "")
+sparql_query = data.get("SPARQL query", "")
 
-# If there is no SPARQL query, we can't generate an RDF graph
+# If no SPARQL query is found, we can't generate RDF
 if not sparql_query:
     print("No SPARQL query found. Exiting.")
     exit(1)
@@ -35,8 +45,8 @@ namespace = Namespace("http://example.org/issue/")
 # Define a subject using the MD5 hash of the SPARQL query
 issue_subject = URIRef(f"http://example.org/issues/{hash_subject}")
 
-# Iterate through the JSON data and convert to RDF
-for field, value in issue_data.items():
+# Iterate through the form data and convert to RDF
+for field, value in data.items():
     predicate = URIRef(namespace + field.replace(" ", "_"))  # Convert field name to a URI predicate
     object_literal = Literal(value, datatype=XSD.string)     # Convert value to xsd:string literal
     g.add((issue_subject, predicate, object_literal))
