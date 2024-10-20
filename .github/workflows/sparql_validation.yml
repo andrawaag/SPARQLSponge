@@ -34,7 +34,7 @@ jobs:
       env:
         GITHUB_ISSUE_BODY: ${{ github.event.issue.body }}
 
-    # Step 2: Post comment and close issue if SPARQL is invalid
+    # Step 2: Post comment on invalid query and close the issue
     - name: Post comment on invalid query and close the issue
       if: failure()
       run: |
@@ -45,7 +45,20 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # Step 3: Directly convert issue form to RDF with MD5 hash of SPARQL query
+    # Step 3: Extract endpoint and license, apply labels
+    - name: Extract Endpoint and License and Set Labels
+      if: success()  # Only apply labels if the SPARQL validation was successful
+      run: |
+        ISSUE_NUMBER=${{ github.event.issue.number }}
+        # Extract endpoint and license from issue body
+        ENDPOINT=$(echo "${{ github.event.issue.body }}" | grep -oP '(?<=### Select SPARQL Endpoints\n\s*)[^#]+')
+        LICENSE=$(echo "${{ github.event.issue.body }}" | grep -oP '(?<=### License\n\s*)[^#]+')
+        # Apply the labels using the GitHub API
+        gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER}/labels -f labels='["$ENDPOINT", "$LICENSE"]'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    # Step 4: Directly convert issue form to RDF with MD5 hash of SPARQL query
     - name: Convert issue form to RDF with MD5 hash
       if: success()  # Only run this step if the SPARQL validation was successful
       run: |
@@ -53,7 +66,7 @@ jobs:
       env:
         GITHUB_ISSUE_BODY: ${{ github.event.issue.body }}
 
-    # Step 4: Upload the RDF as an artifact
+    # Step 5: Upload the RDF as an artifact
     - name: Upload RDF as an artifact
       if: success()  # Only upload if the conversion was successful
       uses: actions/upload-artifact@v4
