@@ -50,11 +50,15 @@ jobs:
       if: success()  # Only apply labels if the SPARQL validation was successful
       run: |
         ISSUE_NUMBER=${{ github.event.issue.number }}
-        # Extract endpoint and license from issue body
-        ENDPOINT=$(echo "${{ github.event.issue.body }}" | grep -oP '(?<=### Select SPARQL Endpoints\n\s*)[^#]+')
-        LICENSE=$(echo "${{ github.event.issue.body }}" | grep -oP '(?<=### License\n\s*)[^#]+')
+        
+        # Extract endpoint from issue body
+        ENDPOINT=$(echo "${{ github.event.issue.body }}" | awk -v RS='\r?\n' '/Select SPARQL Endpoints/{getline; print}')
+        
+        # Extract license from issue body
+        LICENSE=$(echo "${{ github.event.issue.body }}" | awk -v RS='\r?\n' '/License/{getline; print}')
+        
         # Apply the labels using the GitHub API
-        gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER}/labels -f labels='["$ENDPOINT", "$LICENSE"]'
+        gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER}/labels -f labels='["'$ENDPOINT'", "'$LICENSE'"]'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -66,7 +70,7 @@ jobs:
       env:
         GITHUB_ISSUE_BODY: ${{ github.event.issue.body }}
 
-    # Step 5: Upload the RDF as an artifact
+    # Step 5: Upload RDF as an artifact
     - name: Upload RDF as an artifact
       if: success()  # Only upload if the conversion was successful
       uses: actions/upload-artifact@v4
