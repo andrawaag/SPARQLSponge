@@ -52,13 +52,16 @@ jobs:
         ISSUE_NUMBER=${{ github.event.issue.number }}
         
         # Extract endpoint from issue body
-        ENDPOINT=$(echo "${{ github.event.issue.body }}" | awk -v RS='\r?\n' '/Select SPARQL Endpoints/{getline; print}')
+        ENDPOINT=$(echo "${{ github.event.issue.body }}" | awk -v RS='\r?\n' '/Select SPARQL Endpoints/{getline; print}' | tr -d '\r\n')
         
         # Extract license from issue body
-        LICENSE=$(echo "${{ github.event.issue.body }}" | awk -v RS='\r?\n' '/License/{getline; print}')
+        LICENSE=$(echo "${{ github.event.issue.body }}" | awk -v RS='\r?\n' '/License/{getline; print}' | tr -d '\r\n')
         
-        # Apply the labels using the GitHub API
-        gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER}/labels -f labels='["'$ENDPOINT'", "'$LICENSE'"]'
+        # Apply the labels using the GitHub API (make sure they're passed as an array)
+        if [[ -n "$ENDPOINT" ]] && [[ -n "$LICENSE" ]]; then
+          gh api repos/${{ github.repository }}/issues/${ISSUE_NUMBER}/labels \
+          -f labels='["'"$ENDPOINT"'", "'"$LICENSE"'"]'
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
