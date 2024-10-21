@@ -23,6 +23,7 @@ body:
       description: Choose one or more SPARQL endpoints from the list, or select 'Other' to provide your own.
       options:
         - label: "Wikidata SPARQL (https://query.wikidata.org/sparql)"
+        - label: "Wikimedia Commons (https://commons-query.wikimedia.org)"
         - label: "DBpedia SPARQL (https://dbpedia.org/sparql)"
         - label: "UniProt SPARQL (https://sparql.uniprot.org/sparql)"
         - label: "Wikipathways SPARQL (https://sparql.wikipathways.org)"
